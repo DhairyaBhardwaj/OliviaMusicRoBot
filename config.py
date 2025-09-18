@@ -18,8 +18,8 @@ START_IMG = getenv("START_IMG", "https://files.catbox.moe/rl4dby.jpg")
 
 SESSION = getenv("SESSION", None)
 
-SUPPORT_CHAT = getenv("SUPPORT_CHAT", "https://t.me/tbcbotschat")
-SUPPORT_CHANNEL = getenv("SUPPORT_CHANNEL", "https://t.me/tbc_bots")
+SUPPORT_CHAT = getenv("SUPPORT_CHAT", "https://t.me/Dhairya_musicXchat")
+SUPPORT_CHANNEL = getenv("SUPPORT_CHANNEL", "https://t.me/DhairyaXmusic")
 
 SUDO_USERS = list(map(int, getenv("SUDO_USERS", "5090817443").split()))
 
