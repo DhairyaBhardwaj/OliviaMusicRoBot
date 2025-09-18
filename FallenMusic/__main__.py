@@ -86,6 +86,6 @@ async def fallen_startup():
     await idle()
 
 
-if name == "main":
+if __name__ == __"main"__:
     asyncio.get_event_loop().run_until_complete(fallen_startup())
     LOGGER.error("Fallen Music Bot Stopped.")
