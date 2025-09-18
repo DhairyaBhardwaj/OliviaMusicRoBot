@@ -1,30 +1,8 @@
-# MIT License
-#
-# Copyright (c) 2023 AnonymousX1025
-#
-# Permission is hereby granted, free of charge, to any person obtaining a copy
-# of this software and associated documentation files (the "Software"), to deal
-# in the Software without restriction, including without limitation the rights
-# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# copies of the Software, and to permit persons to whom the Software is
-# furnished to do so, subject to the following conditions:
-#
-# The above copyright notice and this permission notice shall be included in all
-# copies or substantial portions of the Software.
-#
-# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# SOFTWARE.
-
 import asyncio
 import importlib
 import os
-
 from pyrogram import idle
+from aiohttp import web
 
 from FallenMusic import (
     ASS_ID,
@@ -41,8 +19,29 @@ from FallenMusic import (
 )
 from FallenMusic.Modules import ALL_MODULES
 
+# Port by SayXSee
+PORT = int(os.environ.get("PORT", 8080))
+
+async def handle_requests(request):
+    """A simple handler for the web server."""
+    return web.Response(text="Bot is running!")
+
+async def start_web_server():
+    """Starts the aiohttp web server in the background."""
+    app_server = web.Application()
+    app_server.router.add_get("/", handle_requests)
+    runner = web.AppRunner(app_server)
+    await runner.setup()
+    site = web.TCPSite(runner, '0.0.0.0', PORT)
+    await site.start()
+    LOGGER.info(f"[•] Web server started on port {PORT}")
+
 
 async def fallen_startup():
+    """Main function to start the bot and its components."""
+    # Start the web server as a background task
+    web_server_task = asyncio.create_task(start_web_server())
+
     LOGGER.info("[•] Loading Modules...")
     for module in ALL_MODULES:
         importlib.import_module("FallenMusic.Modules." + module)
@@ -58,7 +57,7 @@ async def fallen_startup():
     try:
         await app.send_message(
             SUNAME,
-            f"✯ ғᴀʟʟᴇɴ ᴍᴜsɪᴄ ʙᴏᴛ ✯\n\n𖢵 ɪᴅ : `{BOT_ID}`\n𖢵 ɴᴀᴍᴇ : {BOT_NAME}\n𖢵 ᴜsᴇʀɴᴀᴍᴇ : @{BOT_USERNAME}",
+            f"✯ ғᴀʟʟᴇɴ ᴍᴜsɪᴄ ʙᴏᴛ ✯\n\n𖢵 ɪᴅ : {BOT_ID}\n𖢵 ɴᴀᴍᴇ : {BOT_NAME}\n𖢵 ᴜsᴇʀɴᴀᴍᴇ : @{BOT_USERNAME}",
         )
     except:
         LOGGER.error(
@@ -68,7 +67,7 @@ async def fallen_startup():
     try:
         await app2.send_message(
             SUNAME,
-            f"✯ ғᴀʟʟᴇɴ ᴍᴜsɪᴄ ᴀss ✯\n\n𖢵 ɪᴅ : `{ASS_ID}`\n𖢵 ɴᴀᴍᴇ : {ASS_NAME}\n𖢵 ᴜsᴇʀɴᴀᴍᴇ : @{ASS_USERNAME}",
+            f"✯ ғᴀʟʟᴇɴ ᴍᴜsɪᴄ ᴀss ✯\n\n𖢵 ɪᴅ : {ASS_ID}\n𖢵 ɴᴀᴍᴇ : {ASS_NAME}\n𖢵 ᴜsᴇʀɴᴀᴍᴇ : @{ASS_USERNAME}",
         )
     except:
         LOGGER.error(
@@ -87,6 +86,6 @@ async def fallen_startup():
     await idle()
 
 
-if __name__ == "__main__":
+if name == "main":
     asyncio.get_event_loop().run_until_complete(fallen_startup())
     LOGGER.error("Fallen Music Bot Stopped.")
